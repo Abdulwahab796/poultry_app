@@ -27,14 +27,12 @@ jobs:
 
       - name: Get dependencies
         run: flutter pub get
-        working-directory: ./poultry_app
 
       - name: Build APK
         run: flutter build apk --release
-        working-directory: ./poultry_app
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: release-apk
-          path: poultry_app/build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
