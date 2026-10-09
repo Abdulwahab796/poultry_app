@@ -16,6 +16,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Find pubspec.yaml
+        run: |
+          echo "=== Finding pubspec.yaml ==="
+          find . -name "pubspec.yaml"
+
       - name: Set up Java JDK
         uses: actions/setup-java@v4
         with:
@@ -30,14 +35,19 @@ jobs:
           cache: true
 
       - name: Install Dependencies
-        run: flutter pub get
+        run: |
+          PUBSPEC_DIR=$(dirname $(find . -name "pubspec.yaml" | head -n 1))
+          echo "Found pubspec.yaml in: $PUBSPEC_DIR"
+          cd $PUBSPEC_DIR && flutter pub get
 
       - name: Build Release APK
-        run: flutter build apk --release
+        run: |
+          PUBSPEC_DIR=$(dirname $(find . -name "pubspec.yaml" | head -n 1))
+          cd $PUBSPEC_DIR && flutter build apk --release
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: '**/build/app/outputs/flutter-apk/app-release.apk'
           retention-days: 7
