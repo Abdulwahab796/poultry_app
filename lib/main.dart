@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package0:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -28,10 +28,10 @@ class PoultryApp extends StatefulWidget {
 }
 
 class _PoultryAppState extends State<PoultryApp> {
-  String selectedLanguage = 'ps'; // د پيل ژبه پښتو
-  String userRole = 'farmer';     // د پيل رول: فارمر یا ډاکټر
+  String selectedLanguage = 'ps'; // د پیل ژبه
+  String userRole = 'farmer';     // د پیل رول (فارمر یا ډاکټر)
 
-  // د ۶ ژبو مسلکي ترجمې (پښتو، انګلیسي، دري، عربي، اردو، هندي)
+  // د ۶ ژبو ترجمې
   final Map<String, Map<String, String>> localizedTexts = {
     'ps': {
       'title': 'د چرګانو ناروغۍ او مسلکي تداوي',
@@ -44,7 +44,7 @@ class _PoultryAppState extends State<PoultryApp> {
       'symptoms_lbl': 'نښې نښانې:',
     },
     'en': {
-      'title': 'Poultry Diseases & Professional Treatment',
+      'title': 'Poultry Diseases & Treatment',
       'farmer_tab': 'Farmer View',
       'doctor_tab': 'Doctor View',
       'no_data': 'No diseases found.',
@@ -113,7 +113,6 @@ class _PoultryAppState extends State<PoultryApp> {
           centerTitle: true,
           backgroundColor: Colors.teal,
           actions: [
-            // د ۶ ژبو د انتخاب ډراپ‌ډاون
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4.0),
               child: DropdownButton<String>(
@@ -138,7 +137,6 @@ class _PoultryAppState extends State<PoultryApp> {
         ),
         body: Column(
           children: [
-            // د فارمر او ډاکټر د تلوېزیوني سټایل تڼۍ (Role Toggle)
             Container(
               color: Colors.teal.shade50,
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -183,8 +181,8 @@ class _PoultryAppState extends State<PoultryApp> {
 
                   final docs = snapshot.data?.docs ?? [];
 
-                  // نمونوي معلومات په ۶ واړو ژبو سره
-                  final displayList = docs.isEmpty ? [
+                  // د ډیټا جوړښت سم ټایپ کاسټ شول (Type-casting fix)
+                  final List<Map<String, dynamic>> displayList = docs.isEmpty ? [
                     {
                       'category': 'Viral / ویروسي',
                       'name_ps': 'نیوکاسل (Newcastle Disease)',
@@ -235,21 +233,19 @@ class _PoultryAppState extends State<PoultryApp> {
 
                       'dosage': '۱ ګرام په ۱ لیتر اوبو کې د ۳ څخه تر ۵ پرله پسې ورځو پورې.'
                     }
-                  ] : docs;
+                  ] : docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
                   return ListView.builder(
                     itemCount: displayList.length,
                     padding: const EdgeInsets.all(10),
                     itemBuilder: (context, index) {
-                      final item = displayList[index];
-                      final data = docs.isEmpty ? item : (item.data() as Map<String, dynamic>);
+                      final Map<String, dynamic> data = displayList[index];
 
-                      // د ژبې پر بنسټ د معلوماتو اخستل
-                      String name = data['name_$selectedLanguage'] ?? data['name_en'] ?? data['name_ps'] ?? 'Disease';
-                      String symptoms = data['symptoms_$selectedLanguage'] ?? data['symptoms_en'] ?? data['symptoms_ps'] ?? '';
-                      String treatment = data['treatment_$selectedLanguage'] ?? data['treatment_en'] ?? data['treatment_ps'] ?? '';
-                      String dosage = data['dosage'] ?? 'Consult vet clinic.';
-                      String category = data['category'] ?? 'General';
+                      String name = data['name_$selectedLanguage']?.toString() ?? data['name_en']?.toString() ?? data['name_ps']?.toString() ?? 'Disease';
+                      String symptoms = data['symptoms_$selectedLanguage']?.toString() ?? data['symptoms_en']?.toString() ?? data['symptoms_ps']?.toString() ?? '';
+                      String treatment = data['treatment_$selectedLanguage']?.toString() ?? data['treatment_en']?.toString() ?? data['treatment_ps']?.toString() ?? '';
+                      String dosage = data['dosage']?.toString() ?? 'Consult vet clinic.';
+                      String category = data['category']?.toString() ?? 'General';
 
                       return Card(
                         elevation: 3,
@@ -281,10 +277,8 @@ class _PoultryAppState extends State<PoultryApp> {
                               ),
                               const Divider(height: 16),
                               
-                              // نښې نښانې
                               Text('${getText('symptoms_lbl')} $symptoms', style: const TextStyle(fontSize: 13, color: Colors.black87)),
 
-                              // د ډاکټر رول لپاره ځانګړي مسلکي معلومات
                               if (userRole == 'doctor') ...[
                                 const SizedBox(height: 10),
                                 Container(
