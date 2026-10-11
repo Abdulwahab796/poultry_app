@@ -1,4 +1,4 @@
-import 'package0:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -28,26 +28,23 @@ class PoultryApp extends StatefulWidget {
 }
 
 class _PoultryAppState extends State<PoultryApp> {
-  String selectedLanguage = 'ps'; // د پیل ژبه
-  String userRole = 'farmer';     // د پیل رول (فارمر یا ډاکټر)
+  String selectedLanguage = 'ps';
+  String userRole = 'farmer';
 
-  // د ۶ ژبو ترجمې
   final Map<String, Map<String, String>> localizedTexts = {
     'ps': {
       'title': 'د چرګانو ناروغۍ او مسلکي تداوي',
       'farmer_tab': 'فارمر (عام معلومات)',
       'doctor_tab': 'ډاکټر (مسلکي تداوي)',
-      'no_data': 'هیڅ ناروغي ونه موندل شوه.',
       'error': 'د معلوماتو په لوستلو کې ستونزه!',
       'treatment_lbl': 'د تداوي لارښوونه:',
-      'dosage_lbl': 'د درملو اندازه (Dosage):',
+      'dosage_lbl': 'د درملو اندازه:',
       'symptoms_lbl': 'نښې نښانې:',
     },
     'en': {
       'title': 'Poultry Diseases & Treatment',
       'farmer_tab': 'Farmer View',
       'doctor_tab': 'Doctor View',
-      'no_data': 'No diseases found.',
       'error': 'Error loading data!',
       'treatment_lbl': 'Treatment Guide:',
       'dosage_lbl': 'Dosage:',
@@ -57,7 +54,6 @@ class _PoultryAppState extends State<PoultryApp> {
       'title': 'بیماری های طیور و تداوی مسلکی',
       'farmer_tab': 'بخش فارمر',
       'doctor_tab': 'بخش داکتر (مسلکی)',
-      'no_data': 'هیچ بیماری یافت نشد.',
       'error': 'خطا در بارگذاری معلومات!',
       'treatment_lbl': 'راهنمای تداوی:',
       'dosage_lbl': 'مقدار دوا:',
@@ -67,7 +63,6 @@ class _PoultryAppState extends State<PoultryApp> {
       'title': 'أمراض الدواجن والعلاج المهني',
       'farmer_tab': 'قسم المزارع',
       'doctor_tab': 'قسم الطبيب البيطري',
-      'no_data': 'لم يتم العثور على أمراض.',
       'error': 'خطأ في تحميل البيانات!',
       'treatment_lbl': 'دليل العلاج:',
       'dosage_lbl': 'الجرعة:',
@@ -77,7 +72,6 @@ class _PoultryAppState extends State<PoultryApp> {
       'title': 'مرغیوں کی بیماریاں اور علاج',
       'farmer_tab': 'فارمر کا نقطہ نظر',
       'doctor_tab': 'ڈاکٹر کا نقطہ نظر',
-      'no_data': 'کوئی بیماری نہیں ملی۔',
       'error': 'ڈیٹا لوڈ کرنے میں خرابی!',
       'treatment_lbl': 'علاج کی رہنمائی:',
       'dosage_lbl': 'خوراک کی مقدار:',
@@ -87,7 +81,6 @@ class _PoultryAppState extends State<PoultryApp> {
       'title': 'मुर्गी रोग और पेशेवर उपचार',
       'farmer_tab': 'किसान दृश्य',
       'doctor_tab': 'डॉक्टर दृश्य',
-      'no_data': 'कोई बीमारी नहीं मिली।',
       'error': 'डेटा लोड करने में त्रुटि!',
       'treatment_lbl': 'उपचार मार्गदर्शिका:',
       'dosage_lbl': 'खुराक:',
@@ -109,7 +102,7 @@ class _PoultryAppState extends State<PoultryApp> {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text(getText('title'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+          title: Text(getText('title'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
           centerTitle: true,
           backgroundColor: Colors.teal,
           actions: [
@@ -167,7 +160,6 @@ class _PoultryAppState extends State<PoultryApp> {
                 ],
               ),
             ),
-            
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance.collection('diseases').snapshots(),
@@ -181,7 +173,6 @@ class _PoultryAppState extends State<PoultryApp> {
 
                   final docs = snapshot.data?.docs ?? [];
 
-                  // د ډیټا جوړښت سم ټایپ کاسټ شول (Type-casting fix)
                   final List<Map<String, dynamic>> displayList = docs.isEmpty ? [
                     {
                       'category': 'Viral / ویروسي',
@@ -276,9 +267,7 @@ class _PoultryAppState extends State<PoultryApp> {
                                 ],
                               ),
                               const Divider(height: 16),
-                              
                               Text('${getText('symptoms_lbl')} $symptoms', style: const TextStyle(fontSize: 13, color: Colors.black87)),
-
                               if (userRole == 'doctor') ...[
                                 const SizedBox(height: 10),
                                 Container(
